@@ -86,7 +86,7 @@ body {
 /* ===== Wizard row: back button | step content | next button ===== */
 .wizard-row {
   display: flex;
-  align-items: center;
+  align-items: stretch;
   gap: 6px;
   flex: 1;
   min-height: 0;
@@ -95,12 +95,13 @@ body {
 .side-nav-btn {
   flex: 0 0 auto;
   width: 44px;
-  height: 44px;
-  border-radius: 50%;
+  height: auto;
+  align-self: stretch;
+  border-radius: 14px;
   border: 1.5px solid var(--color-border);
   background: var(--color-surface);
   color: var(--color-ink);
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -123,7 +124,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .step-content {
