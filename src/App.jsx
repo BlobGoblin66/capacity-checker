@@ -353,20 +353,7 @@ function App() {
                     </div>
                   </details>
 
-                  <div className="share-card">
-                    <p className="share-card-eyebrow">Capacity check snapshot</p>
-                    <div className="share-card-row">
-                      <div className="score-block">
-                        <div className="score-num">{result.capacityScore}</div>
-                        <div className="score-label">Capacity</div>
-                      </div>
-                      <div className="score-divider">vs</div>
-                      <div className="score-block">
-                        <div className="score-num">{result.adjustedImportance}</div>
-                        <div className="score-label">Importance</div>
-                      </div>
-                    </div>
-
+                 
                   <button className="primary-btn" onClick={reset} type="button">
                     Start a new assessment
                   </button>
