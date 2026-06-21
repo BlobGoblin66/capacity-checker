@@ -356,17 +356,19 @@ if (tips.length === 0) {
   </div>
 </details>
 
-<div className="tips-section">
-  <p className="tips-title">Tips</p>
+{(result.verdictClass === 'caution' || result.verdictClass === 'stop') && result.tips?.length > 0 && (
+  <div className="tips-section">
+    <p className="tips-title">Tips</p>
 
-  <ul className="tips-list">
-    {result.tips.map((tip, i) => (
-      <li key={i} className="tips-item">
-        {tip}
-      </li>
-    ))}
-  </ul>
-</div>
+    <ul className="tips-list">
+      {result.tips.map((tip, i) => (
+        <li key={i} className="tips-item">
+          {tip}
+        </li>
+      ))}
+    </ul>
+  </div>
+)}
         
 <button
   className="primary-btn"
