@@ -619,4 +619,35 @@ body {
   .step-title {
     font-size: 1.7rem;
   }
+
+.tips-section {
+  margin-top: 14px;
+  padding: 14px;
+  border-radius: 12px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  text-align: left;
+}
+
+.tips-title {
+  font-family: var(--font-heading);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-muted);
+  margin: 0 0 10px;
+  text-align: center;
+}
+
+.tips-list {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.tips-item {
+  font-size: 0.9rem;
+  color: var(--color-ink);
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
 }
