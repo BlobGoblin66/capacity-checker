@@ -80,6 +80,7 @@ function App() {
   const [stepIndex, setStepIndex] = useState(saved?.stepIndex ?? 0)
   const [capacityBand, setCapacityBand] = useState(saved?.capacityBand ?? null)
   const [capacityValue, setCapacityValue] = useState(saved?.capacityValue ?? null)
+  const [bump, setBump] = useState(false)
   const [importanceAnswers, setImportanceAnswers] = useState(saved?.importanceAnswers ?? {})
   const [assessmentAnswers, setAssessmentAnswers] = useState(saved?.assessmentAnswers ?? {})
 
@@ -103,6 +104,12 @@ function App() {
   function selectBand(band) {
     setCapacityBand(band.id)
     setCapacityValue(band.min)
+  }
+
+  function setCapacityValueWithBump(v) {
+    setCapacityValue(v)
+    setBump(true)
+    setTimeout(() => setBump(false), 150)
   }
 
   function setImportance(id, value) {
@@ -210,15 +217,15 @@ function App() {
           <div className="step-content">
             <p className="step-kicker">Capacity check</p>
             <h1 className="step-title">Fine-tune your capacity</h1>
-            <p className="step-subtext">You selected "{selectedBand.label}" &mdash; use the slider to pick the exact number that feels right.</p>
-            <div className="big-number">{capacityValue}</div>
+            <p className="step-subtext">You selected "{selectedBand.label}" &mdash; pick the exact number that feels right.</p>
+            <div className={`big-number ${bump ? 'bump' : ''}`}>{capacityValue}</div>
             <input
               type="range"
               min={selectedBand.min}
               max={selectedBand.max}
               step={1}
               value={capacityValue}
-              onChange={(e) => setCapacityValue(Number(e.target.value))}
+              onChange={(e) => setCapacityValueWithBump(Number(e.target.value))}
               className="big-slider"
             />
           </div>
@@ -228,6 +235,7 @@ function App() {
           <div className="step-content">
             <p className="step-kicker">Task importance</p>
             <h1 className="step-title">{step.criterion.q}</h1>
+            <p className="step-subtext">0 = not relevant, 1 = very little, 2 = somewhat, 3 = definitely</p>
             <div className="scale-grid">
               {SCALE_OPTIONS.map((opt) => (
                 <button
@@ -285,11 +293,16 @@ function App() {
               </div>
               <div className={`verdict ${result.verdictClass}`}>{result.verdict}</div>
               <p className="verdict-detail">{result.detail}</p>
-              <div className="adjust-note">
-                Raw importance score: {result.rawImportance} / 10
-                <br />
-                Task assessment adjustment: {result.adjustment} point(s)
-              </div>
+              <details className="formula-disclosure">
+                <summary>Show the formula</summary>
+                <div className="adjust-note">
+                  Raw importance score: {result.rawImportance} / 10
+                  <br />
+                  Task assessment adjustment: {result.adjustment} point(s)
+                  <br />
+                  Adjusted importance: {result.adjustedImportance} / 10
+                </div>
+              </details>
               <button className="primary-btn" onClick={reset} type="button">
                 Start a new assessment
               </button>
