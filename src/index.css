@@ -15,8 +15,8 @@
   --color-border: #ED809D;       /* borders / dividers */
 
   /* Accent (selection highlight, buttons, slider) */
-  --color-accent: #9A4E51;
-  --color-accent-light: #F2E7CB;
+  --color-accent: #F2E7CB;
+  --color-accent-light: #9A4E51;
 
   /* Verdict colors */
   --color-go: #303030;
