@@ -168,15 +168,33 @@ function App() {
       verdictClass = 'go'
       detail = 'Your capacity comfortably covers this task right now.'
     } else if (diff >= -2) {
-      verdict = '<i>Proceed mindfully</i>'
+      verdict = 'Proceed mindfully'
       verdictClass = 'caution'
       detail = 'This task is possible, but it might require pacing or concessions.'
     } else {
-      verdict = '<b>Protect your capacity</b>'
+      verdict = 'Protect your capacity'
       verdictClass = 'stop'
       detail = 'This task currently asks more than your capacity can comfortably give. Consider delaying, delegating, or asking for help.'
     }
 
+let tips = []
+
+if (assessmentAnswers.minimise === true) {
+  tips.push('You may be able to simplify or reduce the scope of this task.')
+}
+
+if (assessmentAnswers.delegate === true) {
+  tips.push('Some or all of this task could potentially be delegated.')
+}
+
+if (assessmentAnswers.still_want === false) {
+  tips.push('It may be worth reconsidering whether you need to be the person doing this.')
+}
+
+if (tips.length === 0) {
+  tips.push('No specific adjustments were identified — your initial assessment looks complete.')
+}
+    
     return {
       capacityScore,
       rawImportance: Math.round(rawImportance * 10) / 10,
@@ -185,6 +203,7 @@ function App() {
       verdict,
       verdictClass,
       detail,
+      tips
     }
   }
 
@@ -337,6 +356,18 @@ function App() {
   </div>
 </details>
 
+<div className="tips-section">
+  <p className="tips-title">Tips</p>
+
+  <ul className="tips-list">
+    {result.tips.map((tip, i) => (
+      <li key={i} className="tips-item">
+        {tip}
+      </li>
+    ))}
+  </ul>
+</div>
+        
 <button
   className="primary-btn"
   onClick={reset}
