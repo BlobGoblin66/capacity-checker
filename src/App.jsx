@@ -83,8 +83,6 @@ function App() {
   const [bump, setBump] = useState(false)
   const [importanceAnswers, setImportanceAnswers] = useState(saved?.importanceAnswers ?? {})
   const [assessmentAnswers, setAssessmentAnswers] = useState(saved?.assessmentAnswers ?? {})
-
-  const [shareStatus, setShareStatus] = useState('')
   const [trail, setTrail] = useState([])
 
   const step = STEPS[stepIndex]
@@ -144,7 +142,6 @@ function App() {
     setCapacityValue(null)
     setImportanceAnswers({})
     setAssessmentAnswers({})
-    setShareStatus('')
     localStorage.removeItem(STORAGE_KEY)
   }
 
@@ -188,26 +185,6 @@ function App() {
       verdict,
       verdictClass,
       detail,
-    }
-  }
-
-  async function shareResult(result) {
-    const text = `Capacity check: ${result.capacityScore}/10 vs Adjusted importance: ${result.adjustedImportance}/10 — ${result.verdict}.`
-    if (navigator.share) {
-      try {
-        await navigator.share({ text })
-        setShareStatus('Shared!')
-      } catch {
-        setShareStatus('')
-      }
-    } else if (navigator.clipboard) {
-      try {
-        await navigator.clipboard.writeText(text)
-        setShareStatus('Copied to clipboard')
-        setTimeout(() => setShareStatus(''), 2500)
-      } catch {
-        setShareStatus('Could not copy')
-      }
     }
   }
 
@@ -345,43 +322,33 @@ function App() {
         <div className={`verdict-banner ${result.verdictClass}`}>
           {result.verdict}
         </div>
-        <p className="verdict-detail">{result.detail}</p>
+        
+        
+<p className="verdict-detail">{result.detail}</p>
 
-        <details className="formula-disclosure">
-          <summary>Show the formula</summary>
-          <div className="adjust-note">
-            Raw importance score: {result.rawImportance} / 10
-            <br />
-            Task assessment adjustment: {result.adjustment} point(s)
-            <br />
-            Adjusted importance: {result.adjustedImportance} / 10
-          </div>
-        </details>
-      </div>
+<details className="formula-disclosure">
+  <summary>Show the formula</summary>
+  <div className="adjust-note">
+    Raw importance score: {result.rawImportance} / 10
+    <br />
+    Task assessment adjustment: {result.adjustment} point(s)
+    <br />
+    Adjusted importance: {result.adjustedImportance} / 10
+  </div>
+</details>
 
-      <div className="share-card">
-        <p className="share-card-eyebrow">Capacity check snapshot</p>
-        <div className="share-card-row">
-          <div className="score-block">
-            <div className="score-num">{result.capacityScore}</div>
-            <div className="score-label">Capacity</div>
-          </div>
-          <div className="score-divider">vs</div>
-          <div className="score-block">
-            <div className="score-num">{result.adjustedImportance}</div>
-            <div className="score-label">Importance</div>
-          </div>
-        </div>
-        <div className="share-card-verdict">{result.verdict}</div>
-      </div>
-                 
-                  <button className="primary-btn" onClick={reset} type="button">
-                    Start a new assessment
-                  </button>
-                  {shareStatus && <p className="share-status">{shareStatus}</p>}
-                </div>
-              )
-            })()}
+<button
+  className="primary-btn"
+  onClick={reset}
+  type="button"
+>
+  Start a new assessment
+</button>
+
+</div>
+</div>
+  )
+})()}
           </div>
         </div>
 
