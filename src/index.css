@@ -4,8 +4,8 @@
    ============================================ */
 :root {
   /* Fonts: swap these for any Google Font name, or a system font stack */
-  --font-heading: 'DM Serif Display', serif;
-  --font-body: 'Fraunces', serif;
+  --font-heading: 'Chakra Petch', sans-serif;
+  --font-body: 'Chakra Petch', sans-serif;
 
   /* Core palette */
   --color-bg: #110000;          /* page background */
@@ -88,6 +88,7 @@ body {
 .step-kicker {
   font-family: var(--font-body);
   font-size: 0.78rem;
+  font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--color-muted);
@@ -98,6 +99,7 @@ body {
 .step-title {
   font-family: var(--font-heading);
   font-size: 1.6rem;
+  font-weight: 300;
   line-height: 1.3;
   margin: 0 0 12px;
   text-align: center;
