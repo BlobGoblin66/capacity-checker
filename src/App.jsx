@@ -42,7 +42,7 @@ const IMPORTANCE_CRITERIA = [
 ]
 
 const SCALE_OPTIONS = [
-  { value: 0, label: 'N/A' },
+  { value: 0, label: 'Not at all or not relevant' },
   { value: 1, label: 'Very little' },
   { value: 2, label: 'Somewhat' },
   { value: 3, label: 'Definitely' },
@@ -228,7 +228,7 @@ function App() {
           <div className="step-content">
             <p className="step-kicker">Task importance</p>
             <h1 className="step-title">{step.criterion.q}</h1>
-            <p className="step-subtext">0 = not relevant, 1 = very little, 2 = somewhat, 3 = definitely</p>
+            <p className="step-subtext">0 = not relevant, 1 = very little, 2 = somewhat 3 = definitely</p>
             <div className="scale-grid">
               {SCALE_OPTIONS.map((opt) => (
                 <button
