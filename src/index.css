@@ -8,14 +8,14 @@
   --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 
   /* Core palette */
-  --color-bg: #303030;          /* page background */
-  --color-surface: #F1E8C7;      /* cards / option backgrounds */
-  --color-ink: #7D99A4;          /* main text */
-  --color-muted: #D1D0E2;        /* secondary text */
-  --color-border: #C54E2E;       /* borders / dividers */
+  --color-bg: #110000;          /* page background */
+  --color-surface: #461312;      /* cards / option backgrounds */
+  --color-ink: #ED809D;          /* main text */
+  --color-muted: #CAC76A;        /* secondary text */
+  --color-border: #ED809D;       /* borders / dividers */
 
   /* Accent (selection highlight, buttons, slider) */
-  --color-accent: #4a6b5a;
+  --color-accent: #CAC76A;
   --color-accent-light: #e7efe9;
 
   /* Verdict colors */
