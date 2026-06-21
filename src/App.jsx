@@ -374,19 +374,7 @@ function App() {
         </div>
         <div className="share-card-verdict">{result.verdict}</div>
       </div>
-
-      <div className="result-actions">
-        <button className="primary-btn" onClick={() => shareResult(result)} type="button">
-          Share result
-        </button>
-        <button className="primary-btn" onClick={reset} type="button">
-          Start a new assessment
-        </button>
-      </div>
-      {shareStatus && <p className="share-status">{shareStatus}</p>}
-    </div>
-  )
-})()}                 
+                 
                   <button className="primary-btn" onClick={reset} type="button">
                     Start a new assessment
                   </button>
