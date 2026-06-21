@@ -324,36 +324,69 @@ function App() {
               </>
             )}
 
-            {step.type === 'result' && (() => {
-              const result = calculateResult()
-              return (
-                <div className="result-content">
-                  <p className="step-kicker">Your result</p>
-                  <div className="result-score-row">
-                    <div className="score-block">
-                      <div className="score-num">{result.capacityScore}</div>
-                      <div className="score-label">Capacity</div>
-                    </div>
-                    <div className="score-divider">vs</div>
-                    <div className="score-block">
-                      <div className="score-num">{result.adjustedImportance}</div>
-                      <div className="score-label">Importance</div>
-                    </div>
-                  </div>
-                  <div className={`verdict ${result.verdictClass}`}>{result.verdict}</div>
-                  <p className="verdict-detail">{result.detail}</p>
-                  <details className="formula-disclosure">
-                    <summary>Show the formula</summary>
-                    <div className="adjust-note">
-                      Raw importance score: {result.rawImportance} / 10
-                      <br />
-                      Task assessment adjustment: {result.adjustment} point(s)
-                      <br />
-                      Adjusted importance: {result.adjustedImportance} / 10
-                    </div>
-                  </details>
+           {step.type === 'result' && (() => {
+  const result = calculateResult()
+  return (
+    <div className="result-content">
+      <div className="scorecard">
+        <p className="scorecard-label">Capacity check result</p>
 
-                 
+        <div className="stat-grid">
+          <div className="stat-tile">
+            <div className="stat-num">{result.capacityScore}</div>
+            <div className="stat-label">Capacity</div>
+          </div>
+          <div className="stat-tile">
+            <div className="stat-num">{result.adjustedImportance}</div>
+            <div className="stat-label">Importance</div>
+          </div>
+        </div>
+
+        <div className={`verdict-banner ${result.verdictClass}`}>
+          {result.verdict}
+        </div>
+        <p className="verdict-detail">{result.detail}</p>
+
+        <details className="formula-disclosure">
+          <summary>Show the formula</summary>
+          <div className="adjust-note">
+            Raw importance score: {result.rawImportance} / 10
+            <br />
+            Task assessment adjustment: {result.adjustment} point(s)
+            <br />
+            Adjusted importance: {result.adjustedImportance} / 10
+          </div>
+        </details>
+      </div>
+
+      <div className="share-card">
+        <p className="share-card-eyebrow">Capacity check snapshot</p>
+        <div className="share-card-row">
+          <div className="score-block">
+            <div className="score-num">{result.capacityScore}</div>
+            <div className="score-label">Capacity</div>
+          </div>
+          <div className="score-divider">vs</div>
+          <div className="score-block">
+            <div className="score-num">{result.adjustedImportance}</div>
+            <div className="score-label">Importance</div>
+          </div>
+        </div>
+        <div className="share-card-verdict">{result.verdict}</div>
+      </div>
+
+      <div className="result-actions">
+        <button className="primary-btn" onClick={() => shareResult(result)} type="button">
+          Share result
+        </button>
+        <button className="primary-btn" onClick={reset} type="button">
+          Start a new assessment
+        </button>
+      </div>
+      {shareStatus && <p className="share-status">{shareStatus}</p>}
+    </div>
+  )
+})()}                 
                   <button className="primary-btn" onClick={reset} type="button">
                     Start a new assessment
                   </button>
