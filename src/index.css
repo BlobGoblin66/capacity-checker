@@ -19,12 +19,12 @@
   --color-accent-light: #9A4E51;
 
   /* Verdict colors */
-  --color-go: #4a6b5a;
+  --color-go: #303030;
   --color-go-bg: #9CA763;
-  --color-caution: #b5742a;
+  --color-caution: #303030;
   --color-caution-bg: #EFBF43;
-  --color-stop: #a3433a;
-  --color-stop-bg: #FF5548;
+  --color-stop: #F4EDDA;
+  --color-stop-bg: #303030;
 }
 /* ============================================
    Structure — usually no need to touch below here
