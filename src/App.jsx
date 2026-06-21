@@ -164,15 +164,15 @@ function App() {
 
     let verdict, verdictClass, detail
     if (diff >= 2) {
-      verdict = 'Take it on'
+      verdict = 'You have room for this'
       verdictClass = 'go'
       detail = 'Your capacity comfortably covers this task right now.'
     } else if (diff >= -2) {
-      verdict = 'Manageable, but be mindful'
+      verdict = '<i>Proceed mindfully</i>'
       verdictClass = 'caution'
-      detail = 'Capacity and importance are close. Proceed with care, and check in with yourself as you go.'
+      detail = 'This task is possible, but it might require pacing or concessions.'
     } else {
-      verdict = 'Defer or seek support'
+      verdict = '<b>Protect your capacity</b>'
       verdictClass = 'stop'
       detail = 'This task currently asks more than your capacity can comfortably give. Consider delaying, delegating, or asking for help.'
     }
