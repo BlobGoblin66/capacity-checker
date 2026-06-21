@@ -15,8 +15,9 @@
   --color-border: #ED809D;       /* borders / dividers */
 
   /* Accent (selection highlight, buttons, slider) */
-  --color-accent: #F2E7CB;
+  --color-accent: #9A4E51;
   --color-accent-light: #9A4E51;
+  --color-scale-num: #ED809D;
 
   /* Verdict colors */
   --color-go: #303030;
@@ -248,9 +249,10 @@ body {
   color: var(--color-accent);
 }
 
-.scale-label {
-  font-size: 0.85rem;
-  color: var(--color-muted);
+.scale-num {
+  font-family: var(--font-heading);
+  font-size: 1.8rem;
+  color: var(--color-scale-num);
 }
 
 /* Yes/No */
