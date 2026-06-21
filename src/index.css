@@ -146,15 +146,6 @@ body {
   opacity: 0.15;
 }
 
-.side-nav-btn:disabled {
-  opacity: 0.3;
-  cursor: not-allowed;
-}
-
-.side-nav-btn:active:not(:disabled) {
-  transform: scale(0.92);
-}
-
 .step-stage {
   flex: 1;
   min-width: 0;
