@@ -366,12 +366,7 @@ function App() {
                         <div className="score-label">Importance</div>
                       </div>
                     </div>
-                    <div className="share-card-verdict">{result.verdict}</div>
-                  </div>
 
-                  <button className="primary-btn" onClick={() => shareResult(result)} type="button">
-                    Share result
-                  </button>
                   <button className="primary-btn" onClick={reset} type="button">
                     Start a new assessment
                   </button>
