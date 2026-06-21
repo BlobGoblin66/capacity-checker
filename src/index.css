@@ -12,22 +12,22 @@
   /* Core palette */
   --color-bg: #110000;          /* page background */
   --color-surface: #461312;      /* cards / option backgrounds */
-  --color-ink: #CAC76A;          /* main text */
-  --color-muted: #CAC76A;        /* secondary text */
+  --color-ink: #F9CC90;          /* main text */
+  --color-muted: #F9CC90;        /* secondary text */
   --color-border: #F2E7CB;       /* borders / dividers */
 
   /* Accent (selection highlight, buttons, slider) */
   --color-accent: #9A4E51;
   --color-accent-light: #9A4E51;
-  --color-scale-num: #CAC76A;
+  --color-scale-num: #F9CC90;
 
   /* Verdict colors */
-  --color-go: #CAC76A;
-  --color-go-bg: #461312;
-  --color-caution: #CAC76A;
-  --color-caution-bg: #461312;
-  --color-stop: #CAC76A;
-  --color-stop-bg: #461312;
+  --color-go: #F9CC90;
+  --color-go-bg: #94A16F;
+  --color-caution: #F9CC90;
+  --color-caution-bg: #F79F2B;
+  --color-stop: #F9CC90;
+  --color-stop-bg: #C05223;
 }
 
 /* ============================================
