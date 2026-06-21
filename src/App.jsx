@@ -148,17 +148,17 @@ function App() {
 
     let verdict, verdictClass, detail
     if (diff >= 2) {
-      verdict = 'Take it on'
+      verdict = 'Go for  it'
       verdictClass = 'go'
       detail = 'Your capacity comfortably covers this task right now.'
     } else if (diff >= -2) {
       verdict = 'Manageable, but be mindful'
       verdictClass = 'caution'
-      detail = 'Capacity and importance are close. Proceed with care, and check in with yourself as you go.'
+      detail = 'Capacity and task importance are close. Proceed mindfully.'
     } else {
-      verdict = 'Defer or seek support'
+      verdict = 'Uh-uh'
       verdictClass = 'stop'
-      detail = 'This task currently asks more than your capacity can comfortably give. Consider delaying, delegating, or asking for help.'
+      detail = 'This task will ask too much from you. Consider delaying, delegating or asking for help.'
     }
 
     return {
@@ -195,8 +195,7 @@ function App() {
       <div className="step-stage">
         {step.type === 'capacity-band' && (
           <div className="step-content">
-            <p className="step-kicker">Capacity check</p>
-            <h1 className="step-title">Right now, I am&hellip;</h1>
+            <h1 className="step-title">How do you feel <i>right now</i>?</h1>
             <div className="band-list">
               {CAPACITY_BANDS.map((band) => (
                 <button
@@ -215,9 +214,8 @@ function App() {
 
         {step.type === 'capacity-slider' && selectedBand && (
           <div className="step-content">
-            <p className="step-kicker">Capacity check</p>
-            <h1 className="step-title">Fine-tune your capacity</h1>
-            <p className="step-subtext">You selected "{selectedBand.label}" &mdash; pick the exact number that feels right.</p>
+            <h1 className="step-title">You selected "{selectedBand.label}"</h1>
+            <p className="step-subtext"> Use the slider to narrow down what "{selectedBand.label}" feels like. A higher score equates to more capacity.</p>
             <div className={`big-number ${bump ? 'bump' : ''}`}>{capacityValue}</div>
             <input
               type="range"
@@ -235,7 +233,6 @@ function App() {
           <div className="step-content">
             <p className="step-kicker">Task importance</p>
             <h1 className="step-title">{step.criterion.q}</h1>
-            <p className="step-subtext">0 = not relevant, 1 = very little, 2 = somewhat, 3 = definitely</p>
             <div className="scale-grid">
               {SCALE_OPTIONS.map((opt) => (
                 <button
@@ -288,7 +285,7 @@ function App() {
                 <div className="score-divider">vs</div>
                 <div className="score-block">
                   <div className="score-num">{result.adjustedImportance}</div>
-                  <div className="score-label">Adjusted importance</div>
+                  <div className="score-label">Importance</div>
                 </div>
               </div>
               <div className={`verdict ${result.verdictClass}`}>{result.verdict}</div>
