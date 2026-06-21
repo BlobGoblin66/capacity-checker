@@ -42,7 +42,7 @@ const IMPORTANCE_CRITERIA = [
 ]
 
 const SCALE_OPTIONS = [
-  { value: 0, label: 'Not at all or not relevant' },
+  { value: 0, label: 'N/A' },
   { value: 1, label: 'Very little' },
   { value: 2, label: 'Somewhat' },
   { value: 3, label: 'Definitely' },
@@ -55,8 +55,8 @@ const ASSESSMENT_QUESTIONS = [
 ]
 
 const STORAGE_KEY = 'capacity-checker-session'
+const PROGRESS_ICON = '🌱'
 
-// Build a flat list of steps: capacity band, capacity slider, each importance Q, each assessment Q
 const STEPS = [
   { type: 'capacity-band' },
   { type: 'capacity-slider' },
@@ -78,11 +78,13 @@ function App() {
   const saved = loadSession()
 
   const [stepIndex, setStepIndex] = useState(saved?.stepIndex ?? 0)
+  const [direction, setDirection] = useState('forward')
   const [capacityBand, setCapacityBand] = useState(saved?.capacityBand ?? null)
   const [capacityValue, setCapacityValue] = useState(saved?.capacityValue ?? null)
   const [bump, setBump] = useState(false)
   const [importanceAnswers, setImportanceAnswers] = useState(saved?.importanceAnswers ?? {})
   const [assessmentAnswers, setAssessmentAnswers] = useState(saved?.assessmentAnswers ?? {})
+  const [shareStatus, setShareStatus] = useState('')
 
   useEffect(() => {
     localStorage.setItem(
@@ -94,10 +96,12 @@ function App() {
   const step = STEPS[stepIndex]
 
   function goNext() {
+    setDirection('forward')
     setStepIndex((i) => Math.min(i + 1, STEPS.length - 1))
   }
 
   function goBack() {
+    setDirection('backward')
     setStepIndex((i) => Math.max(i - 1, 0))
   }
 
@@ -122,10 +126,12 @@ function App() {
 
   function reset() {
     setStepIndex(0)
+    setDirection('forward')
     setCapacityBand(null)
     setCapacityValue(null)
     setImportanceAnswers({})
     setAssessmentAnswers({})
+    setShareStatus('')
     localStorage.removeItem(STORAGE_KEY)
   }
 
@@ -148,17 +154,17 @@ function App() {
 
     let verdict, verdictClass, detail
     if (diff >= 2) {
-      verdict = 'Go for  it'
+      verdict = 'Take it on'
       verdictClass = 'go'
       detail = 'Your capacity comfortably covers this task right now.'
     } else if (diff >= -2) {
       verdict = 'Manageable, but be mindful'
       verdictClass = 'caution'
-      detail = 'Capacity and task importance are close. Proceed mindfully.'
+      detail = 'Capacity and importance are close. Proceed with care, and check in with yourself as you go.'
     } else {
-      verdict = 'Uh-uh'
+      verdict = 'Defer or seek support'
       verdictClass = 'stop'
-      detail = 'This task will ask too much from you. Consider delaying, delegating or asking for help.'
+      detail = 'This task currently asks more than your capacity can comfortably give. Consider delaying, delegating, or asking for help.'
     }
 
     return {
@@ -172,14 +178,33 @@ function App() {
     }
   }
 
-  // Determine if current step has a valid answer (to enable "Next")
+  async function shareResult(result) {
+    const text = `Capacity check: ${result.capacityScore}/10 vs Adjusted importance: ${result.adjustedImportance}/10 — ${result.verdict}.`
+    if (navigator.share) {
+      try {
+        await navigator.share({ text })
+        setShareStatus('Shared!')
+      } catch {
+        setShareStatus('')
+      }
+    } else if (navigator.clipboard) {
+      try {
+        await navigator.clipboard.writeText(text)
+        setShareStatus('Copied to clipboard')
+        setTimeout(() => setShareStatus(''), 2500)
+      } catch {
+        setShareStatus('Could not copy')
+      }
+    }
+  }
+
   let canAdvance = true
   if (step.type === 'capacity-band') canAdvance = !!capacityBand
   if (step.type === 'capacity-slider') canAdvance = capacityValue !== null
   if (step.type === 'importance') canAdvance = importanceAnswers[step.criterion.id] !== undefined
   if (step.type === 'assessment') canAdvance = assessmentAnswers[step.question.id] !== undefined
 
-  const progressSteps = STEPS.length - 1 // exclude result from progress count
+  const progressSteps = STEPS.length - 1
   const progressPercent = step.type === 'result' ? 100 : Math.round((stepIndex / progressSteps) * 100)
 
   const selectedBand = CAPACITY_BANDS.find((b) => b.id === capacityBand)
@@ -189,135 +214,177 @@ function App() {
       {step.type !== 'result' && (
         <div className="progress-track">
           <div className="progress-fill" style={{ width: `${progressPercent}%` }} />
+          <div className="progress-marker" style={{ left: `${progressPercent}%` }}>{PROGRESS_ICON}</div>
         </div>
       )}
 
-      <div className="step-stage">
-        {step.type === 'capacity-band' && (
-          <div className="step-content">
-            <h1 className="step-title">How do you feel <i>right now</i>?</h1>
-            <div className="band-list">
-              {CAPACITY_BANDS.map((band) => (
-                <button
-                  key={band.id}
-                  className={`band-option ${capacityBand === band.id ? 'selected' : ''}`}
-                  onClick={() => selectBand(band)}
-                  type="button"
-                >
-                  <span className="band-label">{band.label}</span>
-                  <span className="band-description">{band.description}</span>
-                </button>
-              ))}
-            </div>
-          </div>
+      <div className="wizard-row">
+        {step.type !== 'result' && (
+          <button
+            className="side-nav-btn"
+            onClick={goBack}
+            disabled={stepIndex === 0}
+            type="button"
+            aria-label="Back"
+          >
+            ‹
+          </button>
         )}
 
-        {step.type === 'capacity-slider' && selectedBand && (
-          <div className="step-content">
-            <h1 className="step-title">You selected "{selectedBand.label}"</h1>
-            <p className="step-subtext"> Use the slider to narrow down what "{selectedBand.label}" feels like. A higher score equates to more capacity.</p>
-            <div className={`big-number ${bump ? 'bump' : ''}`}>{capacityValue}</div>
-            <input
-              type="range"
-              min={selectedBand.min}
-              max={selectedBand.max}
-              step={1}
-              value={capacityValue}
-              onChange={(e) => setCapacityValueWithBump(Number(e.target.value))}
-              className="big-slider"
-            />
-          </div>
-        )}
-
-        {step.type === 'importance' && (
-          <div className="step-content">
-            <p className="step-kicker">Task importance</p>
-            <h1 className="step-title">{step.criterion.q}</h1>
-            <div className="scale-grid">
-              {SCALE_OPTIONS.map((opt) => (
-                <button
-                  key={opt.value}
-                  className={`scale-card ${importanceAnswers[step.criterion.id] === opt.value ? 'selected' : ''}`}
-                  onClick={() => setImportance(step.criterion.id, opt.value)}
-                  type="button"
-                >
-                  <span className="scale-num">{opt.value}</span>
-                  <span className="scale-label">{opt.label}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {step.type === 'assessment' && (
-          <div className="step-content">
-            <p className="step-kicker">Task assessment</p>
-            <h1 className="step-title">{step.question.q}</h1>
-            <div className="yesno-grid">
-              <button
-                className={`yesno-card ${assessmentAnswers[step.question.id] === true ? 'selected' : ''}`}
-                onClick={() => setAssessment(step.question.id, true)}
-                type="button"
-              >
-                Yes
-              </button>
-              <button
-                className={`yesno-card ${assessmentAnswers[step.question.id] === false ? 'selected' : ''}`}
-                onClick={() => setAssessment(step.question.id, false)}
-                type="button"
-              >
-                No
-              </button>
-            </div>
-          </div>
-        )}
-
-        {step.type === 'result' && (() => {
-          const result = calculateResult()
-          return (
-            <div className="step-content result-content">
-              <p className="step-kicker">Your result</p>
-              <div className="result-score-row">
-                <div className="score-block">
-                  <div className="score-num">{result.capacityScore}</div>
-                  <div className="score-label">Capacity</div>
+        <div className="step-stage">
+          <div className={`step-content slide-${direction}`} key={stepIndex}>
+            {step.type === 'capacity-band' && (
+              <>
+                <p className="step-kicker">Capacity check</p>
+                <h1 className="step-title">Right now, I am&hellip;</h1>
+                <div className="band-list">
+                  {CAPACITY_BANDS.map((band) => (
+                    <button
+                      key={band.id}
+                      className={`band-option ${capacityBand === band.id ? 'selected' : ''}`}
+                      onClick={() => selectBand(band)}
+                      type="button"
+                    >
+                      <span className="band-label">{band.label}</span>
+                      <span className="band-description">{band.description}</span>
+                    </button>
+                  ))}
                 </div>
-                <div className="score-divider">vs</div>
-                <div className="score-block">
-                  <div className="score-num">{result.adjustedImportance}</div>
-                  <div className="score-label">Importance</div>
+              </>
+            )}
+
+            {step.type === 'capacity-slider' && selectedBand && (
+              <>
+                <p className="step-kicker">Capacity check</p>
+                <h1 className="step-title">Fine-tune your capacity</h1>
+                <p className="step-subtext">You selected "{selectedBand.label}" &mdash; pick the exact number that feels right.</p>
+                <div className={`big-number ${bump ? 'bump' : ''}`}>{capacityValue}</div>
+                <input
+                  type="range"
+                  min={selectedBand.min}
+                  max={selectedBand.max}
+                  step={1}
+                  value={capacityValue}
+                  onChange={(e) => setCapacityValueWithBump(Number(e.target.value))}
+                  className="big-slider"
+                />
+              </>
+            )}
+
+            {step.type === 'importance' && (
+              <>
+                <p className="step-kicker">Task importance</p>
+                <h1 className="step-title">{step.criterion.q}</h1>
+                <p className="step-subtext">0 = not relevant, 1 = very little, 2 = somewhat, 3 = definitely</p>
+                <div className="scale-grid">
+                  {SCALE_OPTIONS.map((opt) => (
+                    <button
+                      key={opt.value}
+                      className={`scale-card ${importanceAnswers[step.criterion.id] === opt.value ? 'selected' : ''}`}
+                      onClick={() => setImportance(step.criterion.id, opt.value)}
+                      type="button"
+                    >
+                      <span className="scale-num">{opt.value}</span>
+                      <span className="scale-label">{opt.label}</span>
+                    </button>
+                  ))}
                 </div>
-              </div>
-              <div className={`verdict ${result.verdictClass}`}>{result.verdict}</div>
-              <p className="verdict-detail">{result.detail}</p>
-              <details className="formula-disclosure">
-                <summary>Show the formula</summary>
-                <div className="adjust-note">
-                  Raw importance score: {result.rawImportance} / 10
-                  <br />
-                  Task assessment adjustment: {result.adjustment} point(s)
-                  <br />
-                  Adjusted importance: {result.adjustedImportance} / 10
+              </>
+            )}
+
+            {step.type === 'assessment' && (
+              <>
+                <p className="step-kicker">Task assessment</p>
+                <h1 className="step-title">{step.question.q}</h1>
+                <div className="yesno-grid">
+                  <button
+                    className={`yesno-card ${assessmentAnswers[step.question.id] === true ? 'selected' : ''}`}
+                    onClick={() => setAssessment(step.question.id, true)}
+                    type="button"
+                  >
+                    Yes
+                  </button>
+                  <button
+                    className={`yesno-card ${assessmentAnswers[step.question.id] === false ? 'selected' : ''}`}
+                    onClick={() => setAssessment(step.question.id, false)}
+                    type="button"
+                  >
+                    No
+                  </button>
                 </div>
-              </details>
-              <button className="primary-btn" onClick={reset} type="button">
-                Start a new assessment
-              </button>
-            </div>
-          )
-        })()}
+              </>
+            )}
+
+            {step.type === 'result' && (() => {
+              const result = calculateResult()
+              return (
+                <div className="result-content">
+                  <p className="step-kicker">Your result</p>
+                  <div className="result-score-row">
+                    <div className="score-block">
+                      <div className="score-num">{result.capacityScore}</div>
+                      <div className="score-label">Capacity</div>
+                    </div>
+                    <div className="score-divider">vs</div>
+                    <div className="score-block">
+                      <div className="score-num">{result.adjustedImportance}</div>
+                      <div className="score-label">Adjusted importance</div>
+                    </div>
+                  </div>
+                  <div className={`verdict ${result.verdictClass}`}>{result.verdict}</div>
+                  <p className="verdict-detail">{result.detail}</p>
+                  <details className="formula-disclosure">
+                    <summary>Show the formula</summary>
+                    <div className="adjust-note">
+                      Raw importance score: {result.rawImportance} / 10
+                      <br />
+                      Task assessment adjustment: {result.adjustment} point(s)
+                      <br />
+                      Adjusted importance: {result.adjustedImportance} / 10
+                    </div>
+                  </details>
+
+                  <div className="share-card">
+                    <p className="share-card-eyebrow">Capacity check snapshot</p>
+                    <div className="share-card-row">
+                      <div className="score-block">
+                        <div className="score-num">{result.capacityScore}</div>
+                        <div className="score-label">Capacity</div>
+                      </div>
+                      <div className="score-divider">vs</div>
+                      <div className="score-block">
+                        <div className="score-num">{result.adjustedImportance}</div>
+                        <div className="score-label">Importance</div>
+                      </div>
+                    </div>
+                    <div className="share-card-verdict">{result.verdict}</div>
+                  </div>
+
+                  <button className="primary-btn" onClick={() => shareResult(result)} type="button">
+                    Share result
+                  </button>
+                  <button className="primary-btn" onClick={reset} type="button">
+                    Start a new assessment
+                  </button>
+                  {shareStatus && <p className="share-status">{shareStatus}</p>}
+                </div>
+              )
+            })()}
+          </div>
+        </div>
+
+        {step.type !== 'result' && (
+          <button
+            className="side-nav-btn"
+            onClick={goNext}
+            disabled={!canAdvance}
+            type="button"
+            aria-label={stepIndex === STEPS.length - 2 ? 'See result' : 'Next'}
+          >
+            ›
+          </button>
+        )}
       </div>
-
-      {step.type !== 'result' && (
-        <div className="nav-row">
-          <button className="nav-btn ghost" onClick={goBack} disabled={stepIndex === 0} type="button">
-            Back
-          </button>
-          <button className="nav-btn primary" onClick={goNext} disabled={!canAdvance} type="button">
-            {stepIndex === STEPS.length - 2 ? 'See result' : 'Next'}
-          </button>
-        </div>
-      )}
     </div>
   )
 }
