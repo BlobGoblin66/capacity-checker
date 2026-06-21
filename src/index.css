@@ -405,6 +405,14 @@ body {
   margin: 20px 0 24px;
 }
 
+.verdict-detail {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--color-muted);
+  text-align: center;
+  margin: 12px 0 0;
+}
+
 .score-block {
   display: flex;
   flex-direction: column;
