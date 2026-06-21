@@ -4,8 +4,8 @@
    ============================================ */
 :root {
   /* Fonts: swap these for any Google Font name, or a system font stack */
-  --font-heading: 'Georgia', 'Iowan Old Style', serif;
-  --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-heading: 'DM Serif Display', serif;
+  --font-body: 'Fraunces', serif;
 
   /* Core palette */
   --color-bg: #110000;          /* page background */
