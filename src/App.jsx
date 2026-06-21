@@ -228,7 +228,6 @@ function App() {
           <div className="step-content">
             <p className="step-kicker">Task importance</p>
             <h1 className="step-title">{step.criterion.q}</h1>
-            <p className="step-subtext">0 = not relevantCHECKING, 1 = very little, 2 = somewhat 3 = definitely</p>
             <div className="scale-grid">
               {SCALE_OPTIONS.map((opt) => (
                 <button
