@@ -42,7 +42,7 @@ const IMPORTANCE_CRITERIA = [
 ]
 
 const SCALE_OPTIONS = [
-  { value: 0, label: 'N/A' },
+  { value: 0, label: 'Not relevant' },
   { value: 1, label: 'Very little' },
   { value: 2, label: 'Somewhat' },
   { value: 3, label: 'Definitely' },
@@ -55,7 +55,6 @@ const ASSESSMENT_QUESTIONS = [
 ]
 
 const STORAGE_KEY = 'capacity-checker-session'
-const PROGRESS_ICON = '🌱'
 
 const STEPS = [
   { type: 'capacity-band' },
@@ -85,6 +84,7 @@ function App() {
   const [importanceAnswers, setImportanceAnswers] = useState(saved?.importanceAnswers ?? {})
   const [assessmentAnswers, setAssessmentAnswers] = useState(saved?.assessmentAnswers ?? {})
   const [shareStatus, setShareStatus] = useState('')
+  const [trail, setTrail] = useState([])
 
   useEffect(() => {
     localStorage.setItem(
@@ -92,6 +92,15 @@ function App() {
       JSON.stringify({ stepIndex, capacityBand, capacityValue, importanceAnswers, assessmentAnswers })
     )
   }, [stepIndex, capacityBand, capacityValue, importanceAnswers, assessmentAnswers])
+
+  useEffect(() => {
+  const id = Date.now()
+  setTrail((prev) => [...prev, { id, percent: progressPercent }])
+  const timeout = setTimeout(() => {
+    setTrail((prev) => prev.filter((t) => t.id !== id))
+  }, 900)
+  return () => clearTimeout(timeout)
+}, [progressPercent])
 
   const step = STEPS[stepIndex]
 
@@ -212,10 +221,13 @@ function App() {
   return (
     <div className="screen">
       {step.type !== 'result' && (
-        <div className="progress-track">
-          <div className="progress-fill" style={{ width: `${progressPercent}%` }} />
-          <div className="progress-marker" style={{ left: `${progressPercent}%` }}>{PROGRESS_ICON}</div>
-        </div>
+       <div className="progress-track">
+  <div className="progress-fill" style={{ width: `${progressPercent}%` }} />
+  {trail.map((t) => (
+    <div key={t.id} className="trail-dot" style={{ left: `${t.percent}%` }} />
+  ))}
+  <div className="progress-marker" style={{ left: `${progressPercent}%` }} />
+</div>
       )}
 
       <div className="wizard-row">
@@ -235,8 +247,7 @@ function App() {
           <div className={`step-content slide-${direction}`} key={stepIndex}>
             {step.type === 'capacity-band' && (
               <>
-                <p className="step-kicker">Capacity check</p>
-                <h1 className="step-title">Right now, I am&hellip;</h1>
+                <h1 className="step-title">How do you feel <i>right now</i>?</h1>
                 <div className="band-list">
                   {CAPACITY_BANDS.map((band) => (
                     <button
@@ -255,9 +266,8 @@ function App() {
 
             {step.type === 'capacity-slider' && selectedBand && (
               <>
-                <p className="step-kicker">Capacity check</p>
-                <h1 className="step-title">Fine-tune your capacity</h1>
-                <p className="step-subtext">You selected "{selectedBand.label}" &mdash; pick the exact number that feels right.</p>
+                <h1 className="step-title">You selected "{selectedBand.label}"</h1>
+                <p className="step-subtext"> Use the slider to fine-tune this. A higher number reflects more capacity.</p>
                 <div className={`big-number ${bump ? 'bump' : ''}`}>{capacityValue}</div>
                 <input
                   type="range"
@@ -273,9 +283,7 @@ function App() {
 
             {step.type === 'importance' && (
               <>
-                <p className="step-kicker">Task importance</p>
                 <h1 className="step-title">{step.criterion.q}</h1>
-                <p className="step-subtext">0 = not relevant, 1 = very little, 2 = somewhat, 3 = definitely</p>
                 <div className="scale-grid">
                   {SCALE_OPTIONS.map((opt) => (
                     <button
