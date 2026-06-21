@@ -3,6 +3,8 @@
    Change these variables and the whole app updates.
    ============================================ */
 :root {
+  color-scheme: dark;
+
   /* Fonts: swap these for any Google Font name, or a system font stack */
   --font-heading: 'Chakra Petch', sans-serif;
   --font-body: 'Chakra Petch', sans-serif;
@@ -27,6 +29,7 @@
   --color-stop: #CAC76A;
   --color-stop-bg: #461312;
 }
+
 /* ============================================
    Structure — usually no need to touch below here
    ============================================ */
@@ -50,7 +53,7 @@ body {
   flex-direction: column;
   max-width: 560px;
   margin: 0 auto;
-  padding: 24px 24px 32px;
+  padding: 20px 12px 24px;
 }
 
 .progress-track {
@@ -58,32 +61,91 @@ body {
   height: 4px;
   background: var(--color-border);
   border-radius: 4px;
-  overflow: hidden;
+  overflow: visible;
   margin-bottom: 8px;
   flex-shrink: 0;
+  position: relative;
 }
 
 .progress-fill {
   height: 100%;
   background: var(--color-accent);
+  border-radius: 4px;
   transition: width 0.3s ease;
+}
+
+.progress-marker {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 16px;
+  transition: left 0.3s ease;
+  line-height: 1;
+}
+
+/* ===== Wizard row: back button | step content | next button ===== */
+.wizard-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  min-height: 0;
+}
+
+.side-nav-btn {
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-ink);
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  cursor: pointer;
+}
+
+.side-nav-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.side-nav-btn:active:not(:disabled) {
+  transform: scale(0.92);
 }
 
 .step-stage {
   flex: 1;
+  min-width: 0;
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
 }
 
 .step-content {
   width: 100%;
-  animation: fade-in 0.25s ease;
 }
 
-@keyframes fade-in {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
+.step-content.slide-forward {
+  animation: slide-in-right 0.28s ease;
+}
+
+.step-content.slide-backward {
+  animation: slide-in-left 0.28s ease;
+}
+
+@keyframes slide-in-right {
+  from { opacity: 0; transform: translateX(28px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slide-in-left {
+  from { opacity: 0; transform: translateX(-28px); }
+  to { opacity: 1; transform: translateX(0); }
 }
 
 .step-kicker {
@@ -99,39 +161,47 @@ body {
 
 .step-title {
   font-family: var(--font-heading);
-  font-size: 1.6rem;
+  font-size: 1.4rem;
   font-weight: 300;
   line-height: 1.3;
   margin: 0 0 12px;
   text-align: center;
+  color: var(--color-ink);
 }
 
 .step-subtext {
   color: var(--color-muted);
-  font-size: 0.92rem;
+  font-size: 0.88rem;
   text-align: center;
-  margin: 0 0 28px;
+  margin: 0 0 20px;
 }
 
-/* Capacity band selection */
+/* Capacity band selection — vertical column, centered */
 .band-list {
   display: flex;
   flex-direction: column;
+  align-items: stretch;
   gap: 10px;
-  margin-top: 24px;
+  margin-top: 16px;
 }
 
 .band-option {
   background: var(--color-surface);
   border: 1.5px solid var(--color-border);
   border-radius: 14px;
-  padding: 16px 18px;
-  text-align: left;
+  padding: 14px 16px;
+  text-align: center;
   cursor: pointer;
   display: flex;
   flex-direction: column;
   gap: 4px;
   font-family: var(--font-body);
+  color: var(--color-ink);
+  transition: transform 0.12s ease;
+}
+
+.band-option:active {
+  transform: scale(0.97);
 }
 
 .band-option.selected {
@@ -141,27 +211,32 @@ body {
 
 .band-label {
   font-family: var(--font-heading);
-  font-size: 1.05rem;
+  font-size: 1.02rem;
   font-weight: 600;
-  color: #CAC76A;
+  color: var(--color-ink);
 }
 
 .band-description {
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   color: var(--color-muted);
 }
 
 /* Capacity slider */
 .big-number {
   font-family: var(--font-heading);
-  font-size: 4rem;
+  font-size: 3.4rem;
   text-align: center;
   color: var(--color-accent);
   margin-bottom: 12px;
+  transition: transform 0.15s ease;
+}
+
+.big-number.bump {
+  transform: scale(1.15);
 }
 
 .big-slider {
-  width: 80%;
+  width: 85%;
   max-width: 280px;
   display: block;
   margin: 8px auto 0;
@@ -172,70 +247,69 @@ body {
   -webkit-appearance: none;
   appearance: none;
   cursor: pointer;
-  transition: box-shadow 0.15s ease;
 }
 
 .big-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 22px;
-  height: 22px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
   background: var(--color-accent);
   border: 3px solid var(--color-surface);
-  box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.35);
   cursor: pointer;
   transition: transform 0.12s ease;
 }
 
 .big-slider::-webkit-slider-thumb:hover,
 .big-slider::-webkit-slider-thumb:active {
-  transform: scale(1.25);
+  transform: scale(1.15);
 }
 
 .big-slider::-moz-range-thumb {
-  width: 22px;
-  height: 22px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
   background: var(--color-accent);
   border: 3px solid var(--color-surface);
-  box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.35);
   cursor: pointer;
   transition: transform 0.12s ease;
 }
 
 .big-slider::-moz-range-thumb:hover,
 .big-slider::-moz-range-thumb:active {
-  transform: scale(1.25);
-}
-
-.big-number {
-  transition: transform 0.15s ease;
-}
-
-.big-number.bump {
   transform: scale(1.15);
 }
 
-/* Importance scale buttons */
+/* Importance scale buttons — vertical column on mobile */
 .scale-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 16px;
 }
 
 .scale-card {
   background: var(--color-surface);
   border: 1.5px solid var(--color-border);
   border-radius: 14px;
-  padding: 20px 14px;
+  padding: 14px;
   text-align: center;
   cursor: pointer;
   display: flex;
-  flex-direction: column;
-  gap: 6px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
   font-family: var(--font-body);
+  color: var(--color-ink);
+  transition: transform 0.12s ease;
+}
+
+.scale-card:active {
+  transform: scale(0.97);
 }
 
 .scale-card.selected {
@@ -245,26 +319,37 @@ body {
 
 .scale-num {
   font-family: var(--font-heading);
-  font-size: 1.8rem;
+  font-size: 1.5rem;
   color: var(--color-scale-num);
 }
 
-/* Yes/No */
+.scale-label {
+  font-size: 0.85rem;
+  color: var(--color-muted);
+}
+
+/* Yes/No — vertical column, explicit colors to avoid mobile auto-dark recoloring */
 .yesno-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
-  margin-top: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 20px;
 }
 
 .yesno-card {
   background: var(--color-surface);
   border: 1.5px solid var(--color-border);
   border-radius: 14px;
-  padding: 22px;
-  font-size: 1.1rem;
+  padding: 18px;
+  font-size: 1.05rem;
   font-family: var(--font-heading);
+  color: var(--color-ink);
   cursor: pointer;
+  transition: transform 0.12s ease;
+}
+
+.yesno-card:active {
+  transform: scale(0.97);
 }
 
 .yesno-card.selected {
@@ -273,39 +358,9 @@ body {
   color: var(--color-border);
 }
 
-/* Navigation */
+/* Side nav buttons replace the old bottom nav row */
 .nav-row {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  margin-top: 24px;
-  flex-shrink: 0;
-}
-
-.nav-btn {
-  flex: 1;
-  padding: 14px;
-  border-radius: 12px;
-  font-size: 0.95rem;
-  font-family: var(--font-body);
-  cursor: pointer;
-  border: 1.5px solid var(--color-border);
-}
-
-.nav-btn.ghost {
-  background: transparent;
-  color: var(--color-muted);
-}
-
-.nav-btn.primary {
-  background: var(--color-accent);
-  border-color: var(--color-accent);
-  color: white;
-}
-
-.nav-btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
+  display: none;
 }
 
 /* Result screen */
@@ -331,6 +386,7 @@ body {
   font-family: var(--font-heading);
   font-size: 2.4rem;
   font-weight: 700;
+  color: var(--color-ink);
 }
 
 .score-label {
@@ -348,12 +404,19 @@ body {
 
 .verdict {
   font-family: var(--font-heading);
-  font-size: 1.2rem;
+  font-size: 1.15rem;
   font-weight: 600;
   padding: 16px 20px;
   border-radius: 14px;
   margin-bottom: 10px;
   display: inline-block;
+  animation: stamp-in 0.35s ease;
+}
+
+@keyframes stamp-in {
+  0% { opacity: 0; transform: scale(1.3); }
+  70% { opacity: 1; transform: scale(0.96); }
+  100% { opacity: 1; transform: scale(1); }
 }
 
 .verdict.go { background: var(--color-go-bg); color: var(--color-go); }
@@ -362,7 +425,7 @@ body {
 
 .verdict-detail {
   color: var(--color-muted);
-  font-size: 0.92rem;
+  font-size: 0.9rem;
   margin: 0 auto 16px;
   max-width: 380px;
 }
@@ -374,6 +437,7 @@ body {
   max-width: 320px;
   text-align: left;
   background: var(--color-bg);
+  border: 1px solid var(--color-border);
   border-radius: 10px;
   padding: 12px 14px;
 }
@@ -386,7 +450,7 @@ body {
 
 .formula-disclosure summary {
   cursor: pointer;
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   color: var(--color-muted);
   list-style: none;
   display: inline-block;
@@ -413,13 +477,54 @@ body {
 
 .primary-btn {
   background: var(--color-accent);
-  color: white;
+  color: var(--color-border);
   border: none;
   border-radius: 12px;
   padding: 14px 28px;
   font-size: 0.95rem;
   font-family: var(--font-body);
   cursor: pointer;
+  margin: 6px;
+}
+
+/* Shareable result card */
+.share-card {
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border);
+  border-radius: 16px;
+  padding: 22px;
+  margin: 18px auto 20px;
+  max-width: 320px;
+  text-align: center;
+}
+
+.share-card-eyebrow {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-muted);
+  margin: 0 0 10px;
+}
+
+.share-card-row {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 10px;
+}
+
+.share-card-verdict {
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.share-status {
+  font-size: 0.78rem;
+  color: var(--color-muted);
+  margin-top: 8px;
+  min-height: 1em;
 }
 
 @media (min-width: 600px) {
@@ -427,6 +532,6 @@ body {
     padding: 48px 24px;
   }
   .step-title {
-    font-size: 1.9rem;
+    font-size: 1.7rem;
   }
 }
