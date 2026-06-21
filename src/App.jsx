@@ -86,6 +86,28 @@ function App() {
   const [shareStatus, setShareStatus] = useState('')
   const [trail, setTrail] = useState([])
 
+ const [trail, setTrail] = useState([])
+
+const step = STEPS[stepIndex]
+const progressSteps = STEPS.length - 1
+const progressPercent = step.type === 'result' ? 100 : Math.round((stepIndex / progressSteps) * 100)
+
+useEffect(() => {
+  localStorage.setItem(
+    STORAGE_KEY,
+    JSON.stringify({ stepIndex, capacityBand, capacityValue, importanceAnswers, assessmentAnswers })
+  )
+}, [stepIndex, capacityBand, capacityValue, importanceAnswers, assessmentAnswers])
+
+useEffect(() => {
+  const id = Date.now()
+  setTrail((prev) => [...prev, { id, percent: progressPercent }])
+  const timeout = setTimeout(() => {
+    setTrail((prev) => prev.filter((t) => t.id !== id))
+  }, 900)
+  return () => clearTimeout(timeout)
+}, [progressPercent])
+  
   useEffect(() => {
     localStorage.setItem(
       STORAGE_KEY,
@@ -102,7 +124,6 @@ function App() {
   return () => clearTimeout(timeout)
 }, [progressPercent])
 
-  const step = STEPS[stepIndex]
 
   function goNext() {
     setDirection('forward')
@@ -212,9 +233,6 @@ function App() {
   if (step.type === 'capacity-slider') canAdvance = capacityValue !== null
   if (step.type === 'importance') canAdvance = importanceAnswers[step.criterion.id] !== undefined
   if (step.type === 'assessment') canAdvance = assessmentAnswers[step.question.id] !== undefined
-
-  const progressSteps = STEPS.length - 1
-  const progressPercent = step.type === 'result' ? 100 : Math.round((stepIndex / progressSteps) * 100)
 
   const selectedBand = CAPACITY_BANDS.find((b) => b.id === capacityBand)
 
