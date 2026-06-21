@@ -12,20 +12,20 @@
   --color-surface: #461312;      /* cards / option backgrounds */
   --color-ink: #CAC76A;          /* main text */
   --color-muted: #CAC76A;        /* secondary text */
-  --color-border: #ED809D;       /* borders / dividers */
+  --color-border: #F2E7CB;       /* borders / dividers */
 
   /* Accent (selection highlight, buttons, slider) */
   --color-accent: #9A4E51;
   --color-accent-light: #9A4E51;
-  --color-scale-num: #ED809D;
+  --color-scale-num: #CAC76A;
 
   /* Verdict colors */
-  --color-go: #303030;
-  --color-go-bg: #9CA763;
-  --color-caution: #303030;
-  --color-caution-bg: #EFBF43;
-  --color-stop: #F4EDDA;
-  --color-stop-bg: #303030;
+  --color-go: #CAC76A;
+  --color-go-bg: #461312;
+  --color-caution: #CAC76A;
+  --color-caution-bg: #461312;
+  --color-stop: #CAC76A;
+  --color-stop-bg: #461312;
 }
 /* ============================================
    Structure — usually no need to touch below here
