@@ -83,31 +83,14 @@ function App() {
   const [bump, setBump] = useState(false)
   const [importanceAnswers, setImportanceAnswers] = useState(saved?.importanceAnswers ?? {})
   const [assessmentAnswers, setAssessmentAnswers] = useState(saved?.assessmentAnswers ?? {})
+
   const [shareStatus, setShareStatus] = useState('')
   const [trail, setTrail] = useState([])
 
- const [trail, setTrail] = useState([])
+  const step = STEPS[stepIndex]
+  const progressSteps = STEPS.length - 1
+  const progressPercent = step.type === 'result' ? 100 : Math.round((stepIndex / progressSteps) * 100)
 
-const step = STEPS[stepIndex]
-const progressSteps = STEPS.length - 1
-const progressPercent = step.type === 'result' ? 100 : Math.round((stepIndex / progressSteps) * 100)
-
-useEffect(() => {
-  localStorage.setItem(
-    STORAGE_KEY,
-    JSON.stringify({ stepIndex, capacityBand, capacityValue, importanceAnswers, assessmentAnswers })
-  )
-}, [stepIndex, capacityBand, capacityValue, importanceAnswers, assessmentAnswers])
-
-useEffect(() => {
-  const id = Date.now()
-  setTrail((prev) => [...prev, { id, percent: progressPercent }])
-  const timeout = setTimeout(() => {
-    setTrail((prev) => prev.filter((t) => t.id !== id))
-  }, 900)
-  return () => clearTimeout(timeout)
-}, [progressPercent])
-  
   useEffect(() => {
     localStorage.setItem(
       STORAGE_KEY,
@@ -116,13 +99,13 @@ useEffect(() => {
   }, [stepIndex, capacityBand, capacityValue, importanceAnswers, assessmentAnswers])
 
   useEffect(() => {
-  const id = Date.now()
-  setTrail((prev) => [...prev, { id, percent: progressPercent }])
-  const timeout = setTimeout(() => {
-    setTrail((prev) => prev.filter((t) => t.id !== id))
-  }, 900)
-  return () => clearTimeout(timeout)
-}, [progressPercent])
+    const id = Date.now()
+    setTrail((prev) => [...prev, { id, percent: progressPercent }])
+    const timeout = setTimeout(() => {
+      setTrail((prev) => prev.filter((t) => t.id !== id))
+    }, 900)
+    return () => clearTimeout(timeout)
+  }, [progressPercent])
 
 
   function goNext() {
