@@ -20,11 +20,11 @@
 
   /* Verdict colors */
   --color-go: #4a6b5a;
-  --color-go-bg: #e7efe9;
+  --color-go-bg: #9CA763;
   --color-caution: #b5742a;
-  --color-caution-bg: #f7ecd8;
+  --color-caution-bg: #EFBF43;
   --color-stop: #a3433a;
-  --color-stop-bg: #f5e1de;
+  --color-stop-bg: #FF5548;
 }
 
 /* ============================================
