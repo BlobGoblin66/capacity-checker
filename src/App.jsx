@@ -43,7 +43,7 @@ const IMPORTANCE_CRITERIA = [
 
 const SCALE_OPTIONS = [
   { value: 0, label: 'Not relevant' },
-  { value: 1, label: 'Very little' },
+  { value: 1, label: 'Not really' },
   { value: 2, label: 'Somewhat' },
   { value: 3, label: 'Definitely' },
 ]
@@ -337,7 +337,7 @@ function App() {
                     <div className="score-divider">vs</div>
                     <div className="score-block">
                       <div className="score-num">{result.adjustedImportance}</div>
-                      <div className="score-label">Adjusted importance</div>
+                      <div className="score-label">Importance</div>
                     </div>
                   </div>
                   <div className={`verdict ${result.verdictClass}`}>{result.verdict}</div>
