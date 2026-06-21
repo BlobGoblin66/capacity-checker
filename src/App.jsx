@@ -210,7 +210,7 @@ function App() {
           <div className="step-content">
             <p className="step-kicker">Capacity check</p>
             <h1 className="step-title">Fine-tune your capacity</h1>
-            <p className="step-subtext">You selected "{selectedBand.label}" &mdash; pick the exact number that feels right.</p>
+            <p className="step-subtext">You selected "{selectedBand.label}" &mdash; use the slider to pick the exact number that feels right.</p>
             <div className="big-number">{capacityValue}</div>
             <input
               type="range"
