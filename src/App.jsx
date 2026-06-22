@@ -159,23 +159,25 @@ function App() {
     if (assessmentAnswers.delegate === true) adjustment -= 1
     if (assessmentAnswers.still_want === false) adjustment -= 1
 
-    const adjustedImportance = Math.max(0, rawImportance + adjustment)
-    const diff = capacityScore - adjustedImportance
+const adjustedImportance = Math.max(0, rawImportance + adjustment)
 
-    let verdict, verdictClass, detail
-    if (diff >= 2) {
-      verdict = 'You have room for this'
-      verdictClass = 'go'
-      detail = 'Your capacity comfortably covers this task right now.'
-    } else if (diff >= -2) {
-      verdict = 'Proceed mindfully'
-      verdictClass = 'caution'
-      detail = 'This task is possible, but it might require pacing or concessions.'
-    } else {
-      verdict = 'Protect your capacity'
-      verdictClass = 'stop'
-      detail = 'This task currently asks more than your capacity can comfortably give. Consider delaying, delegating, or asking for help.'
-    }
+const requiredImportance = Math.max(0, Math.min(10, 10 - capacityScore))
+const diff = adjustedImportance - requiredImportance
+
+let verdict, verdictClass, detail
+if (diff >= -1) {
+  verdict = 'Take it on'
+  verdictClass = 'go'
+  detail = 'Given your current capacity, this task clears the bar — go ahead.'
+} else if (diff >= -4) {
+  verdict = 'Manageable, but be mindful'
+  verdictClass = 'caution'
+  detail = "This task is on the edge of what your current capacity can comfortably support. Proceed with care."
+} else {
+  verdict = 'Defer or seek support'
+  verdictClass = 'stop'
+  detail = 'At your current capacity, this task would need to be far more important to justify taking on right now. Consider delaying, delegating, or asking for help.'
+}
 
 let tips = []
 
@@ -200,6 +202,7 @@ if (tips.length === 0) {
       rawImportance: Math.round(rawImportance * 10) / 10,
       adjustment,
       adjustedImportance: Math.round(adjustedImportance * 10) / 10,
+      requiredImportance: Math.round(requiredImportance * 10) / 10,
       verdict,
       verdictClass,
       detail,
