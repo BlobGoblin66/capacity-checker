@@ -54,8 +54,6 @@ const ASSESSMENT_QUESTIONS = [
   { id: 'still_want', q: 'If others involved in the task knew how challenging it would be for you to complete, would they still want you to do it?' },
 ]
 
-const STORAGE_KEY = 'capacity-checker-session'
-
 const STEPS = [
   { type: 'capacity-band' },
   { type: 'capacity-slider' },
@@ -64,37 +62,22 @@ const STEPS = [
   { type: 'result' },
 ]
 
-function loadSession() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY)
-    return raw ? JSON.parse(raw) : null
-  } catch {
-    return null
-  }
-}
+
 
 function App() {
-  const saved = loadSession()
 
-  const [stepIndex, setStepIndex] = useState(saved?.stepIndex ?? 0)
+  const [stepIndex, setStepIndex] = useState(0)
   const [direction, setDirection] = useState('forward')
-  const [capacityBand, setCapacityBand] = useState(saved?.capacityBand ?? null)
-  const [capacityValue, setCapacityValue] = useState(saved?.capacityValue ?? null)
+  const [capacityBand, setCapacityBand] = useState(null)
+  const [capacityValue, setCapacityValue] = useState(null)
   const [bump, setBump] = useState(false)
-  const [importanceAnswers, setImportanceAnswers] = useState(saved?.importanceAnswers ?? {})
-  const [assessmentAnswers, setAssessmentAnswers] = useState(saved?.assessmentAnswers ?? {})
+  const [importanceAnswers, setImportanceAnswers] = useState({})
+  const [assessmentAnswers, setAssessmentAnswers] = useState({})
   const [trail, setTrail] = useState([])
 
   const step = STEPS[stepIndex]
   const progressSteps = STEPS.length - 1
   const progressPercent = step.type === 'result' ? 100 : Math.round((stepIndex / progressSteps) * 100)
-
-  useEffect(() => {
-    localStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify({ stepIndex, capacityBand, capacityValue, importanceAnswers, assessmentAnswers })
-    )
-  }, [stepIndex, capacityBand, capacityValue, importanceAnswers, assessmentAnswers])
 
   useEffect(() => {
     const id = Date.now()
@@ -142,7 +125,6 @@ function App() {
     setCapacityValue(null)
     setImportanceAnswers({})
     setAssessmentAnswers({})
-    localStorage.removeItem(STORAGE_KEY)
   }
 
   function calculateResult() {
@@ -179,6 +161,11 @@ if (diff >= -1) {
   detail = 'At your current capacity, this task would need to be far more important to justify taking on right now. Consider delaying, delegating, or asking for help.'
 }
 
+let caveat = null
+if (capacityScore <= 2 && verdictClass === 'go') {
+  caveat = "Your capacity is really low right now, but this task is important enough to justify going ahead. Take the smallest path through it, and plan some real rest afterward."
+}
+
 let tips = []
 
 if (assessmentAnswers.minimise === true) {
@@ -206,6 +193,7 @@ if (tips.length === 0) {
       verdict,
       verdictClass,
       detail,
+      caveat,
       tips
     }
   }
@@ -347,7 +335,9 @@ if (tips.length === 0) {
         
         
 <p className="verdict-detail">{result.detail}</p>
-
+{result.caveat && (
+  <p className="caveat-text">{result.caveat}</p>
+)}
 <details className="formula-disclosure">
   <summary>Show the formula</summary>
   <div className="adjust-note">
