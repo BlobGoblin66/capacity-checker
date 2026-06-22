@@ -413,6 +413,18 @@ body {
   margin: 12px 0 0;
 }
 
+.caveat-text {
+  font-size: 0.85rem;
+  font-style: italic;
+  color: var(--color-muted);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin: 12px auto 0;
+  max-width: 320px;
+}
+
 .score-block {
   display: flex;
   flex-direction: column;
@@ -619,6 +631,7 @@ body {
   .step-title {
     font-size: 1.7rem;
   }
+}
 
 .tips-section {
   margin-top: 14px;
